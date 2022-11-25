@@ -106,12 +106,10 @@ end
 
 ---
 
-return {
-	["LinkedList"] = setmetatable({}, {
-		__index = ListConstructor,
-		__newindex = function()
-			error("Attempt to write to read-only table!")
-		end,
-		__call = ListConstructor.new
-	}),
-}
+return setmetatable({}, {
+	__index = ListConstructor,
+	__call = ListConstructor.new,
+	__newindex = function()
+		error("Attempt to write to read-only table!")
+	end,
+})
