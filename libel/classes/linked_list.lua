@@ -111,7 +111,7 @@ return {
 		__index = ListConstructor,
 		__newindex = function()
 			error("Attempt to write to read-only table!")
-		end
+		end,
+		__call = ListConstructor.new
 	}),
 }
-
