@@ -26,3 +26,9 @@ print(tostring(list))
 for i = 1, size do
 	print(string.format("Searching for %d: %s", i, tostring(list:search(i))))
 end
+
+
+
+--[[
+-- Stack testing
+]]
