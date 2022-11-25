@@ -14,27 +14,25 @@
 -- -- data (property)
 -- -- next (LinkedNode)
 ]]
-local LinkedNode = {}
+local LinkedNode = {} -- class for internal use only
 
 -- Methods
-function LinkedNode:get_data()
-	assert(self ~= LinkedNode)
+function LinkedNode:get_data() -- LinkedNode.data getter
+	assert(self ~= LinkedNode) -- Ensure it's a constructed variant
 	return self.data
 end
 
-function LinkedNode:get_next()
-	assert(self ~= LinkedNode)
-	return self.data
+function LinkedNode:get_next() -- LinkedNode.net getter
+	assert(self ~= LinkedNode) -- Ensure it's a constructed variant
+	return self.next
 end
 
 -- Constructors
-LinkedNode.new = function(data)
+LinkedNode.new = function(data) -- We can use the same class since its internal use only
 	local new = setmetatable({}, {
-		__index = function(_, k)
-			return LinkedNode[k]
-		end
+		__index = LinkedNode -- redirect all index requests to parent method table
 	})
-	new.data = data
+	new.data = data -- remember stored value
 	return new
 end
 
@@ -48,40 +46,40 @@ end
 -- Expected Properties:
 -- -- next (LinkedNode)
 ]]
-local LinkedList = {}
-local ListConstructor = {}
+local LinkedList = {} -- Method table
+local ListConstructor = {} -- Constructor wrapper
 
 -- Methods
-function LinkedList:insert(data)
-	assert(self ~= LinkedList)
-	if self.root ~= nil then
-		local current = self.root
-		while current.next ~= nil do
-			current = current.next
+function LinkedList:insert(data) -- Append value to the end
+	assert(self ~= LinkedList) -- Ensure it's a constructed variant
+	if self.root ~= nil then -- If list isn't blank
+		local current = self.root -- Start at root node
+		while current.next ~= nil do -- While this node isn't the last
+			current = current.next -- Advance to next node
 		end
-		current.next = LinkedNode.new(data)
+		current.next = LinkedNode.new(data) -- Add new end to last node
 	else
-		self.root = LinkedNode.new(data)
+		self.root = LinkedNode.new(data) -- If root doesn't exist, set root to new node
 	end
 end
 
-function LinkedList:search(target)
-	assert(self ~= LinkedList)
-	local current = self.root
-	while current ~= nil do
+function LinkedList:search(target) -- Check if value exists in list
+	assert(self ~= LinkedList) -- Ensure it's a constructed variant
+	local current = self.root -- Start at root
+	while current ~= nil do -- Keep advancing until we hit the end
 		if current:get_data() == target then
 			return true
 		end
 		current = current.next
 	end
-	return false
+	return false -- If we hit the end and still didn't return, nothing was found
 end
 
 -- Constructors
-ListConstructor.new = function(...)
+ListConstructor.new = function(...) -- Constructor function
 	local new = setmetatable({}, {
-		__index = LinkedList,
-		__tostring = function(t)
+		__index = LinkedList, -- Constructed object should "inherit" from method table
+		__tostring = function(t) -- Mainly for printing/debugging purposes
 			local s = "{ "
 			local current = t.root
 			while current ~= nil do
@@ -93,11 +91,11 @@ ListConstructor.new = function(...)
 		end
 	})
 
-	for _, value in pairs({ ... }) do
-		if new.root == nil then
+	for _, value in pairs({ ... }) do -- For all arguments passed
+		if new.root == nil then -- Make it the root if no root exists
 			new.root = LinkedNode.new(value)
 		else
-			new:insert(value)
+			new:insert(value) -- otherwise append to list
 		end
 	end
 
@@ -106,10 +104,10 @@ end
 
 ---
 
-return setmetatable({}, {
-	__index = ListConstructor,
-	__call = ListConstructor.new,
-	__newindex = function()
+return setmetatable({}, { -- Return a read-only version of table containing constructor
+	__index = ListConstructor, -- "Inherit" from constructor table
+	__call = ListConstructor.new, -- Allow constructor to be called as LinkedList() directly
+	__newindex = function() -- Disallow writes
 		error("Attempt to write to read-only table!")
 	end,
 })
