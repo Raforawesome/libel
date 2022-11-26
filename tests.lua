@@ -5,20 +5,22 @@
 -- Make random functions actually random
 math.randomseed(os.time())
 
-
-
---[[
--- Linked list testing
-]]
-
-local LinkedList = require("libel/classes/linked_list").LinkedList
-
 local size = 8
 local nums = {}
 for _ = 1, size do
 	table.insert(nums, math.random(size))
 end
 
+
+
+--[[
+-- Linked list testing
+]]
+print("----------")
+print("Linked List Testing")
+print("----------\n")
+
+local LinkedList = require("libel/classes/linked_list")
 
 local list = LinkedList.new(table.unpack(nums))
 print(tostring(list))
@@ -32,3 +34,17 @@ end
 --[[
 -- Stack testing
 ]]
+print("\n\n\n----------")
+print("Stack Testing")
+print("----------\n")
+
+local Stack = require("libel/classes/stack")
+
+local stk = Stack(table.unpack(nums))
+print(tostring(stk))
+
+for _ = 1, #stk do
+	local num = stk:pop()
+	print(string.format("Popped %s", num))
+	print(tostring(stk))
+end
