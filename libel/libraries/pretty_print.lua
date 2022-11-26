@@ -33,6 +33,9 @@ local function pretty_print(...)
 	print(buffer)
 end
 
-return pretty_print
+return {
+	["pretty_print"] = pretty_print,
+	["flatten"] = flatten,
+}
 --local t = { 1, 2, 3, { 4, 5, 6, { 7, 8, 9 } }, 10 }
 --pretty_print(t, 2, t)
